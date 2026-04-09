@@ -1,6 +1,6 @@
 # start of code 
 
-.rodata 
+.section .rodata 
 fmt: .asciz "%lld "
 fmt_n: .asciz "\n"
 
