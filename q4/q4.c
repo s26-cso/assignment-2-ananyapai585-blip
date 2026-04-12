@@ -46,4 +46,7 @@ int main(){
     // NOTE : function ptrs vs functions
 
     // Prompt to stop the calculator app ? 
+
+    // To run :
+    
 }
