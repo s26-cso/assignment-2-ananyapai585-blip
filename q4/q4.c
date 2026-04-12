@@ -31,12 +31,18 @@ int main(){
      
     // if no such operation-file exists 
     if (ptr == NULL) {
-    printf("Such an operation does not exist!\n");
+    printf("Such an operation-file does not exist!\n");
     continue;
     }
 
     operation=dlsym(ptr,op); // finds the function with the name <op>, operation contains addr of the 
                              // req function 
+
+    // if no such operation exists
+    if (operation == NULL) {
+    printf("Such an operation does not exist!\n");
+    continue;
+    }
     
 
     printf("%d\n",operation(n,m)); // function call 

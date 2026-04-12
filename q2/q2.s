@@ -11,13 +11,14 @@ main:
 
 # return address storage on stack 
 
-addi sp, sp, -96
-sd ra, 0(sp)
-sd s0, 16(sp)
+addi sp, sp, -64
+sd ra, 48(sp)
+sd s0, 40(sp)
 sd s1, 32(sp)
-sd s2, 48(sp)
-sd s3, 64(sp)
-sd s4, 80(sp)
+sd s2, 24(sp)
+sd s3, 16(sp)
+sd s4, 8(sp)
+sd s5, 0(sp)
 
 # my main code 
 
@@ -49,7 +50,7 @@ beq x0, x0, LOOP
 
 EXIT_1:
 
-# stack pointer 
+# stack pointer s2
 addi s2, x0, -1
 
 # making a stack array 
@@ -73,11 +74,11 @@ add s4, a0, x0
 
 # main logic 
 addi t0, s0, -1 # iterator starting from n-1
-addi t6, x0, -1 
+addi s5, x0, -1 
 
 LOOP_LOGIC:
 
-beq t0, t6, EXIT_2 
+beq t0, s5, EXIT_2 
 
 # current value arr[i]
 add t4, t0, x0
@@ -92,7 +93,7 @@ add t1, t1, s4
 
 
 INNER_LOOP: 
-  beq s2, t6, no_output
+  beq s2, s5, no_output
   # stack top value in t3
   add t3, s2, x0
   slli t3, t3, 3
@@ -131,10 +132,10 @@ beq x0, x0, LOOP_LOGIC
 EXIT_2:
 # printing the final answer
 add s2, x0, x0 # iterator 
-add t6, s0, x0 # n
+add s5, s0, x0 # n
 
 PRINT_LOOP:
-beq s2, t6, EXIT_3
+beq s2, s5, EXIT_3
 
 la a0, fmt 
 add t1, s2, x0 # getting value result[i]
@@ -150,14 +151,17 @@ EXIT_3:
 la a0, fmt_n  # print nextline
 call printf
 
-ld s4, 80(sp)
-ld s3, 64(sp)
-ld s2, 48(sp)
+
+ld s5, 0(sp)
+ld s4, 8(sp)
+ld s3, 16(sp)
+ld s2, 24(sp)
 ld s1, 32(sp)
-ld s0, 16(sp)
-ld ra, 0(sp)
-addi sp, sp, 96
+ld s0, 40(sp)
+ld ra, 48(sp)
+addi sp, sp, 64
 
 add a0, x0, x0
+
 ret # return 0 after function ends
 
