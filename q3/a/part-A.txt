@@ -1,0 +1,68 @@
+TREASURE HUNTING FOR THE RIGHT INPUT 
+
+STEP 0: trial and error, for the purpose of testing I gave input "HELLO" and "csoisnice"
+and was met with the output "Sorry, try again." 
+
+STEP 1: strings 
+it gave me 100 or so printable strings and after using grep, both strcmp and strncmp was 
+found, which means the final string obtained is getting compared with a given string 
+
+STEP 2: objdump -d | grep -A 35 '<main>'
+This helps me to get the part of code that starts with the main and prints 35 lines 
+after it which is the assembly code equivalent of the source code. 
+
+from this i come to know where the address of the input string is stored :
+
+000000000001062a <main>:
+   1062a:       1141                    addi    sp,sp,-16
+   1062c:       e406                    sd      ra,8(sp)
+   1062e:       e022                    sd      s0,0(sp)
+   10630:       840a                    mv      s0,sp
+   10632:       7139                    addi    sp,sp,-64
+   10634:       00074517                auipc   a0,0x74
+   10638:       94453503                ld      a0,-1724(a0) # 83f78 <_GLOBAL_OFFSET_TABLE_+0x8>
+   1063c:       858a                    mv      a1,sp
+   1063e:       297040ef                jal     150d4 <__scanf>
+
+   it is stored at address stored in sp (s.c eq : scanf("%s",sp));
+
+The next few lines:
+ 10642:       850a                    mv      a0,sp
+   10644:       00074597                auipc   a1,0x74
+   10648:       93c5b583                ld      a1,-1732(a1) # 83f80 <_GLOBAL_OFFSET_TABLE_+0x10>
+   1064c:       5f7170ef                jal     28442 <strcmp>
+   10650:       e901                    bnez    a0,10660 <.fail>
+
+eq sc strcmp(a0,a1); a0 contains sp, which is the input string, which means 
+a1 has the secret password 
+
+next to it the address at which the address of the secret string has been given is what I am assuming, since 
+since a1 is actually a pointer to the actual string. 
+
+
+STEP 3: objdump -s : this helps me find what all is being stored in sections
+because strings are generally stored as is in the .section .rodata or .section .data or 
+smtg similar.
+
+After a bit of scrolling I found :
+
+Contents of section .got:
+ 83f60 ffffffff ffffffff 00000000 00000000  ................
+ 83f70 00000000 00000000 8ce00500 00000000  ................
+ 83f80 91e00500 00000000 bee00500 00000000  ................
+
+91e00500 00000000 bee00500 00000000: is the address where string is stored 
+we shall just find what is stored there using objdump -s but | less so that I can 
+scroll and find the data stored at the address 
+
+5e091 could not be found so I tried out with nearby addresses. 
+5e090 00504e59 674a6868 786a767a 6158584b  .PNYgJhhxjvzaXXK
+ 5e0a0 424d6a65 70513253 67447a31 6170686f  BMjepQ2SgDz1apho
+ 5e0b0 6e702b63 48337566 6f2b5759 3d00596f  np+cH3ufo+WY=.Yo
+
+5e091 is justfied since the first byte is 
+a null byte
+
+00 is null byte and hence '.' should not be included. 
+so if I treat 00 as '\0' the string is exactly 
+PNYgJhhxjvzaXXKBMjepQ2SgDz1aphonp+cH3ufo+WY=

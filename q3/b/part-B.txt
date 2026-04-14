@@ -1,0 +1,68 @@
+TREASURE HUNTING FOR RIGHT INPUT PART-2 
+
+follow all steps of q 3 part A
+  Q/4j9if=dfiw3t4FG. // this does not pass, question expects smtg else
+
+We have to somehow make the output run 'You have passed'
+So using objdump -d 
+
+
+00000000000104c8 <main>:
+   104c8:       1141                    addi    sp,sp,-16
+   104ca:       e406                    sd      ra,8(sp)
+   104cc:       e022                    sd      s0,0(sp)
+   104ce:       840a                    mv      s0,sp
+   104d0:       7131                    addi    sp,sp,-192
+   104d2:       850a                    mv      a0,sp
+   104d4:       00004097                auipc   ra,0x4
+   104d8:       50e080e7                jalr    1294(ra) # 149e2 <_IO_gets>
+   104dc:       850a                    mv      a0,sp
+   104de:       00042597                auipc   a1,0x42
+   104e2:       7d258593                addi    a1,a1,2002 # 52cb0 <secret>
+   104e6:       e911                    bnez    a0,104fa <.fail>
+
+00000000000104e8 <.pass>:
+   104e8:       00042517                auipc   a0,0x42
+   104ec:       7da50513                addi    a0,a0,2010 # 52cc2 <passed>
+   104f0:       00001097                auipc   ra,0x1
+   104f4:       93c080e7                jalr    -1732(ra) # 10e2c <_IO_printf>
+   104f8:       a809                    j       1050a <.end>
+
+00000000000104fa <.fail>:
+   104fa:       00042517                auipc   a0,0x42
+   104fe:       7da50513                addi    a0,a0,2010 # 52cd4 <fail>
+   10502:       00001097                auipc   ra,0x1
+   10506:       92a080e7                jalr    -1750(ra) # 10e2c <_IO_printf>
+
+000000000001050a <.end>:
+   1050a:       6129                    addi    sp,sp,192
+   1050c:       6402                    ld      s0,0(sp)
+   1050e:       60a2                    ld      ra,8(sp)
+   10510:       0141                    addi    sp,sp,16
+   10512:       4501                    li      a0,0
+   10514:       8082                    ret
+
+first we store ra which takes 8 bytes 
+then we store s0 which takes another 8 bytes 
+then we give 192 bytes of space to the string 
+
+if we enter a input more than 192 bytes, it will start overflowing deeper
+
+200 bytes the s0 info on stack gets wiped off(thats why the sp to it in the beginning
+ has been preserved in s0 )
+
+208 bytes and now the ra becomes the last 8 bytes of info , so we will end up going to 
+that address instead.
+Since we want to make it pass, our goal is to put the last 8 bytes that is exactly equal 
+to the address where pass is executed. 
+
+so 200 bytes of some data(string of 200 characters) and 8 bytes=pass function address
+pass address :  00 00 00 00 00 01 04 e8 
+
+obviously from pass it will execute fail first because the strcmp fails 
+
+Now when jumping to ra address, since the ra address contains the 8 bytes(address of pass)
+we jump to pass instead and that get executed. 
+
+
+USE CASE OF PIE: 

@@ -16,10 +16,7 @@ int main(){
     char lib[50]="";
     char op[10];
     scanf("%s",op); // operation type input by user 
-    if(strcmp(op,"exit")==0)
-    {
-         break;
-    } // dummy exit prompt: user prompt 
+    // for exit: ctrl+c
     int n,m;
     scanf("%d %d",&n,&m); // integer inputs by user
     
@@ -41,6 +38,7 @@ int main(){
     // if no such operation exists
     if (operation == NULL) {
     printf("Such an operation does not exist!\n");
+    dlclose(ptr);
     continue;
     }
     
@@ -53,6 +51,6 @@ int main(){
 
     // Prompt to stop the calculator app ? 
 
-    // To run :
+    
     
 }
