@@ -11,15 +11,13 @@ int main(){
 
     int(*operation)(int, int); // function pointer to a function that takes 2 ints as input 
                                // returns int as output
-
-    while(1){
-    char lib[50]="";
-    char op[10];
-    scanf("%s",op); // operation type input by user 
-    // for exit: ctrl+c
-    int n,m;
-    scanf("%d %d",&n,&m); // integer inputs by user
     
+    char op[10];
+    int n,m;                           
+    while(scanf("%s %d %d",op,&n,&m)==3){
+    char lib[50]="";
+   
+   
     strcat(lib,lib_n);
     strcat(lib,op);
     strcat(lib,so); // lib="./lib<op>.so" ./ symbolises that it is in the current working directory
