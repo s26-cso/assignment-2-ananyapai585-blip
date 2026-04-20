@@ -3,6 +3,7 @@
 .section .rodata 
 fmt: .asciz "%lld "
 fmt_n: .asciz "\n"
+fmt_last: .asciz "%lld"
 
 .text
 .globl main
@@ -137,6 +138,10 @@ add s5, s0, x0 # n
 PRINT_LOOP:
 beq s2, s5, EXIT_3
 
+addi t6, s5, -1
+beq s2, t6, LAST_PRINT
+
+
 la a0, fmt 
 add t1, s2, x0 # getting value result[i]
 slli t1, t1, 3
@@ -146,6 +151,17 @@ call printf
 
 addi s2, s2, 1 
 beq x0, x0, PRINT_LOOP
+
+LAST_PRINT:
+
+la a0, fmt_last
+add t1, s2, x0 # getting value result[i]
+slli t1, t1, 3
+add t1, t1, s4
+ld a1, 0(t1)
+call printf
+beq x0, x0, EXIT_3
+
 
 EXIT_3:
 la a0, fmt_n  # print nextline
